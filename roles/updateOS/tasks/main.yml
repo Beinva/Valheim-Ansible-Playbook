@@ -1,0 +1,7 @@
+---
+# Setup/install tasks.
+- include_tasks: UpdateRH.yml
+  when: ansible_os_family == 'RedHat'
+
+- include_tasks: UpdateDebian.yml
+  when: ansible_os_family == 'Debian'

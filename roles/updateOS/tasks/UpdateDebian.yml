@@ -1,0 +1,9 @@
+- debug:
+   msg: 'Update Debian'
+
+- name: Update and upgrade Debian
+  apt:
+    upgrade: yes
+    update_cache: yes
+    cache_valid_time: 86400
+    allow_unauthenticated: 'True'

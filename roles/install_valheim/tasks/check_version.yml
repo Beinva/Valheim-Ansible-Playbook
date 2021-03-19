@@ -1,0 +1,8 @@
+- name: Check available versions
+  shell: curl "https://www.minecraft.net/en-us/download/server" | grep minecraft_server | awk -F " " '{print $4}' | grep -oP "\d+.\d+.\d+"
+  register: avversion
+
+- debug: var=avversion.stdout
+
+- name: create version file
+  shell: echo {{ avversion.stdout }} > /opt/minecraft/server/version

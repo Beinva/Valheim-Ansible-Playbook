@@ -1,0 +1,38 @@
+---
+- name: Check available versions
+  shell: curl "https://www.minecraft.net/en-us/download/server" | grep minecraft_server | awk -F " " '{print $4}' | grep -oP "\d+.\d+.\d+"
+  register: avversion
+
+- debug: 
+   msg: "Available version : {{ avversion.stdout }}"
+
+- name: create version file
+  shell: 'echo {{ avversion.stdout }} > {{ home_minecraft }}{{ workingdir }}/version'
+
+- name: Check url for download
+  shell: curl https://www.minecraft.net/en-us/download/server | grep -oP "https:.*server\.jar"
+  register: download_url
+
+- name : Download
+  get_url:
+    url: "{{ download_url.stdout }}"
+    dest: "{{ home_minecraft }}{{ workingdir }}/server.jar"
+
+- name: first start
+  shell: cd {{ home_minecraft }}{{ workingdir }}/ && java -Xmx{{ max_memory }}M -Xms{{ min_memory }}M -jar {{ home_minecraft }}{{ workingdir }}/server.jar nogui
+
+- name: check process
+  shell: ps -ef | grep -v grep | grep -w server | awk '{print $2}'
+  register: running_process
+
+- name: Agree eula.txt
+  shell: sed -i 's/eula=false/eula=true/g' {{ home_minecraft }}{{ workingdir }}/eula.txt
+
+- name: Create service.minecraft
+  template: src=minecraft.service.tpl dest=/etc/systemd/system/minecraft.service owner=root group=root
+
+- name: start and enable
+  systemd:
+    name: minecraft.service
+    state: started
+    enabled: yes 

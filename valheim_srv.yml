@@ -1,0 +1,21 @@
+- hosts: valheim2
+  name: Deploiement_valheim
+  become: yes
+  vars:
+    #VALHEIM
+    user_valheim: 'steam'
+    group_uservalheim: 'steam'
+    home_valheim: '/home/steam/'
+    workingdir: 'valheim' 
+    #Configuration valheim server
+    server_name: 'valheim_server'
+    server_port: 2456
+    pass_server: 'strong-password'
+    world_name: 'My World' 
+
+
+  roles:  
+    - updateOS
+    - required
+    #- install_valheim
+    #- update_valheim

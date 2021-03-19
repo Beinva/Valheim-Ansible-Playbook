@@ -1,0 +1,31 @@
+
+- name: Create user and environnement
+  user:
+    name: "{{ user_valheim }}"
+    createhome: yes
+    home: "{{ home_valheim }}"
+    shell: /bin/bash
+
+- name: create directory
+  file:
+    path: "{{ home_valheim }}/{{ workingdir }}"
+    state: directory
+    owner: "{{ user_valheim }}"
+    group: "{{ group_uservalheim }}"
+    mode: 0775
+    recurse: yes
+
+- name: download steamcmd
+  get_url:
+    url: "https://steamcdn-a.akamaihd.net/client/installer/steamcmd_linux.tar.gz"
+    dest: "{{ home_valheim }}"  
+    owner: "{{ user_valheim }}"
+    group: "{{ group_uservalheim }}"
+    mode: '755'
+
+- name: extract steamcmd
+  unarchive:
+    src: "{{ home_valheim }}steamcmd_linux.tar.gz"
+    dest: "{{ home_valheim }}"
+    owner: "{{ user_valheim }}"
+    group: "{{ group_uservalheim }}"
